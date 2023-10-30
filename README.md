@@ -265,7 +265,7 @@ The above is syntax sensitive and a bit crashy but it's just a POC. Much can be 
 - fix the script on the THC page
 - use Metasploit listeners and payloads
 - write Falco signatures to detect the TTP
-- if containers are involved, configure gVisor to prevent this TTP
+- if containers are involved, configure gVisor to prevent the TTP
 - if a system's public keys are managed via an authentiction server like Keycloak or FreeIPA, try embedding the attack in the stored key
 - create a tunnel/reverse tunnel so that you can access everything in the new target's network segment (see "sshuttle" or page 133 of "SSH Mastery")
 
