@@ -5,7 +5,7 @@ In late May 2023, an article was posted on The Hacker's Choice web site, describ
 ## Disclaimers
 
 * While credit is given to THC for the attack, the capability has been around for more than a decade.  See the "authorized_keys Format" section (page 124) of the book "SSH Mastery - Second Edition" by Michael W Lucas.  What THC did was develop an approach that can hide things so that the SSH user (our admin) doesn't notice certain activities occurring as part of the login process.
-* Page numbers used in below references to the book "SSH Mastery" may be inaccurate.  This is because I was one of the tech reviewers of the document and have a pre-publicatio copy of the document.
+* Page numbers used in references to the book "SSH Mastery" may be inaccurate.  This is because I was one of the tech reviewers of the document and have a pre-publication copy of the document.  Your mileage will vary.
 
 ## Why it's possible
 
