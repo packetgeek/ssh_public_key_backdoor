@@ -1,0 +1,77 @@
+From ubuntu:22.04
+Maintainer Tim Kramer
+# Date 13 Oct 2023
+
+# prevent install scripts from asking for input
+ENV DEBIAN_FRONTEND noninteractive
+ENV USER root
+
+# uncomment and modify the following to force a full update
+RUN touch /tmp/shim20231013
+
+# check for and acquire updates to binaries
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y apt-utils
+
+# install basic tools
+RUN apt-get install -y \ 
+	atril \
+	bash \
+	build-essential \
+	dbus-x11 \
+	desktop-base \
+	file \
+	iproute2 \
+	iputils-ping \
+	kmod \
+	less \
+	login \
+	man \
+	man-db \
+	manpages \
+	nano \
+	net-tools \
+	netcat-traditional \
+	openssh-client \
+	openssh-server \
+	psmisc \
+	screen \
+	sed \
+	sudo \
+	tcpdump \
+	tigervnc-standalone-server \
+	tmux \
+	unzip \
+	vim \
+	xfce4 \
+	xfce4-goodies \
+	xfce4-places-plugin \
+	xterm \
+	zip 
+
+RUN apt-get install -y novnc
+
+# set the root password
+RUN echo "root:toor" | chpasswd
+
+# set up the start script
+COPY startup.sh /startup.sh
+RUN chmod a+x /startup.sh
+
+# set the user's "landing" folder
+WORKDIR /root
+
+# clean up from the package installs
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# kill the screensaver
+RUN rm /etc/xdg/autostart/xscreensaver*
+RUN rm /etc/xdg/autostart/xfce4-power-manager*
+
+# fix the terminal launcher
+RUN sed -ri 's/X-XFCE-Binaries=x-terminal-emulator/X-XFCE-Binaries=xfce4-terminal/' /usr/share/xfce4/helpers/debian-x-terminal-emulator.desktop
+
+# expose the VNC port
+EXPOSE 5901
+
+ENTRYPOINT [ "/startup.sh" ]

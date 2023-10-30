@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo ""
+echo "### creating containers"
+echo ""
+
+# deploy the container
+docker run -itd --name demo-badguy -h badguy -p 6801:6801 -v ./volumes/desk:/home/student demodesk
+docker run -itd --name demo-server -h SERVER --net=none demossh
+docker run -itd --name demo-admin -h admin --net=none demossh
+
+echo ""
+echo "### creating the switch"
+echo ""
+
+# create the internal switch
+sudo ovs-vsctl add-br demosw
+echo "done"
+
+echo ""
+echo "### connecting stuff"
+echo ""
+
+# connect the container to the switch
+sudo ovs-docker add-port demosw eth2 demo-badguy --ipaddress=10.0.0.250/24
+sudo ovs-docker add-port demosw eth1 demo-admin --ipaddress=10.0.0.1/24
+sudo ovs-docker add-port demosw eth1 demo-server --ipaddress=10.0.0.2/24
+
+echo "done"
+echo ""

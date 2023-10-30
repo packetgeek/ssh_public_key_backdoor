@@ -1,0 +1,27 @@
+From ubuntu:22.04
+
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get update && apt-get install -y \
+  bash \
+  curl \
+  net-tools \
+  netcat-traditional \
+  openssh-client \
+  openssh-server \
+  vim \
+  xxd
+
+RUN useradd -m student
+RUN useradd -m admin
+RUN echo "student:student" |chpasswd
+RUN echo "root:toor" | chpasswd
+RUN echo "admin:admin" |chpasswd
+RUN chsh -s /bin/bash admin
+
+COPY sshstart.sh /sshstart.sh
+RUN chmod a+x /sshstart.sh
+
+#CMD ["/usr/sbin/sshd","-D"]
+#CMD ["/bin/bash"]
+CMD ["/sshstart.sh"]

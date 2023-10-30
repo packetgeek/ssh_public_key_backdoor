@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker build -t demodesk -f Dockerfile-desk .
+docker build -t demossh -f Dockerfile-ssh .
