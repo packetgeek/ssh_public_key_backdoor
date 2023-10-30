@@ -18,16 +18,16 @@ A similar capability exists in the client, where the "commmand" feature can be c
 This approach is successful primarily because of the ignorance or laziness of users and administrators.  in short:
 
 * Very few people look at the content of their keyfiles
-* Very few people pay attention their running processes (we can improve this by renaming processes and using subprocessses)
-* Very few people pay attention to their outbound connections
+* Very few people pay attention their running processes.  We can improve this by renaming processes and hiding things in subprocessses.
+* Very few people pay attention to their outbound connections (I wonder how developement of opensnitch has come.  Something to check.)
 * As noted in "SSH Mastery", the command embedded in the public key will override any command requested as part of the SSH call. In other words, if a user runs "ssh bob@remote_machine.com ifconfig", the "ifconfig" command will be ignored in favor of any command that is embedded in the public key.  The good news is that the orginal command gets stored in the $SSH_ORIGINAL_COMMAND environment variable.
 
 ## Assumptions
 
 * Since adding a backdoor tends to be a post-exploit process, it is assumed that you already have compromised the system administrator's workstation.
-* To complete this lab, you must have some familiarity with: editing text files with vim or nano, and some experience with use of SSH.
+* To complete this lab, you must have some familiarity with: editing text files with vim and use of the SSH command line tool.
 * It is assumed that xxd exists on the remote machines.  In some distributions, this is installed by default.  If it's not on your target machines, you may have to develop an approach using other encoding/decoding tools (baseenc, base32, base64, etc.).  Such is outside of the scope of this worksheet.
-* This demo uses containers based on the Ubuntu 22.04 Docker image, connected in a simple network architecture provided by OpenVSwitch.
+* This demo uses containers based on the Ubuntu 22.04 Docker image, connected in a simple network architecture provided by OpenVirtualSwitch (OVS).  Scripts ('build' and 'destroy') have been created to allow you to avoid having to learn the syntax.  That said, installing Docker and OVS is your responsibility (even though it's just "apt-get install -y ....").
 
 ## Steps: Setting up the demo environment
 
@@ -38,13 +38,16 @@ This approach is successful primarily because of the ignorance or laziness of us
    git clone https://github.com/packetgeek/ssh_public_key_backdoor
    ```
 3) cd into the new folder
+   ```c
+   cd ssh_public_key_backdoor
+   ```
 
-4) Run the following to cause Docker to build the images for the desk and the SSH nodes
+5) Run the following to cause Docker to build the images for the desk and the SSH nodes
    ```c
    ./build-images
    ```
 
-5) Then run the following to deploy the environment.
+6) Then run the following to deploy the environment.
    ```c
    ./build
    ```
@@ -55,19 +58,20 @@ This approach is successful primarily because of the ignorance or laziness of us
    ./destroy
    ./build
    ```
-6) Point a HTML5-capabile browser at: http://127.0.0.1:6801/vnc.html
+
+7) Point a HTML5-capabile browser at: http://127.0.0.1:6801/vnc.html
 
    This should bring up the default NoVNC screen.
 
-7) Click on the "Connect" button.  This should bring up the desktop.
+8) Click on the "Connect" button.  This should bring up the desktop.
 
    If you see a pop-up which states that the Power Manager Plugin unexpectedly left the panel, click on "Remove".  Explanation: because the desktop is in a container, I removed the power manager from the build.
 
-8) Click on the terminal icon at the bottom of the screen to open a terminal window.
+9) Click on the terminal icon at the bottom of the screen to open a terminal window.
 
-9) At the top of the terminal window is a menu item called "Terminal".  Click on that and select "Set Title".  This will open a popup. Type "ADMIN" (in caps, without the quotes) into the window and press Enter. The window title should now be "ADMIN".
+10) At the top of the terminal window is a menu item called "Terminal".  Click on that and select "Set Title".  This will open a popup. Type "ADMIN" (in caps, without the quotes) into the window and press Enter. The window title should now be "ADMIN".
 
-10) In the ADMIN window, type "ssh admin@10.0.0.1" and press enter.  You should get a response that looks like:
+11) In the ADMIN window, type "ssh admin@10.0.0.1" and press enter.  You should get a response that looks like:
 
     ```c
     root@badguy:~# ssh admin@10.0.0.1
@@ -81,9 +85,9 @@ This approach is successful primarily because of the ignorance or laziness of us
 
     The prompt in the ADMIN window should now be "admin@admin:~$".  You're now logged onto the admin workstation.
 
-11) Back on the desktop, click on the terminal icon window agatn to open another terminal.  Change the window's title to "Bad Guy".  Inside of the terminal, type "nc -lvp 4444" and press enter.  This sets up a netcat-based listener, in a terminal window entitled "Terminal - root@badguy:~".
+12) Back on the desktop, click on the terminal icon window agatn to open another terminal.  Change the window's title to "Bad Guy".  Inside of the terminal, type "nc -lvp 4444" and press enter.  This sets up a netcat-based listener, in a terminal window entitled "Terminal - root@badguy:~".
 
-12) In the ADMIN window, run the following command and press enter whenever it asks for input.
+13) In the ADMIN window, run the following command and press enter whenever it asks for input.
 
     ```c
     ssh-keygen -t rsa
